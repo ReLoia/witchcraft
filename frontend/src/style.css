@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -5,7 +7,11 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #262324;
+
+  --primary: #C16464;
+  --secondary: #9747FF;
+  --background: #262324;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -13,13 +19,19 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+h1, h2, h3, h4, p, a, button {
+  margin: 0;
+  padding: 0;
+}
+
+
 a {
   font-weight: 500;
-  color: #646cff;
+  color: var(--primary);
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: var(--secondary);
 }
 
 body {
@@ -59,9 +71,9 @@ button:focus-visible {
 }
 
 #app {
-  /*max-width: 1280px;*/
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  /*padding: 2rem;*/
   /*text-align: center;*/
 }
 
