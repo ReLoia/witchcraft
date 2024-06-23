@@ -5,6 +5,12 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@jamescoyle/svg-icon':
+    specifier: ^0.1.1
+    version: 0.1.1
+  '@mdi/js':
+    specifier: ^7.4.47
+    version: 7.4.47
   vue:
     specifier: ^3.4.21
     version: 3.4.29
@@ -252,8 +258,16 @@ packages:
     dev: true
     optional: true
 
+  /@jamescoyle/svg-icon@0.1.1:
+    resolution: {integrity: sha512-SFxucVGGuI9MzxzzhazmbNP2Qqq3MJH420WPTI3z2OvTCjqr4k38HYEZ63ePKKILUvIFKXZNAm6+hwVcZc5Wvw==}
+    dev: false
+
   /@jridgewell/sourcemap-codec@1.4.15:
     resolution: {integrity: sha512-eF2rxCRulEKXHTRiDrDy6erMYWqNw4LPdQ8UQA4huuxaQsVeRPFl2oM8oDGxMFhJUWZf9McpLtJasDDZb/Bpeg==}
+
+  /@mdi/js@7.4.47:
+    resolution: {integrity: sha512-KPnNOtm5i2pMabqZxpUz7iQf+mfrYZyKCZ8QNz85czgEt7cuHcGorWfdzUMWYA0SD+a6Hn4FmJ+YhzzzjkTZrQ==}
+    dev: false
 
   /@rollup/rollup-android-arm-eabi@4.18.0:
     resolution: {integrity: sha512-Tya6xypR10giZV1XzxmH5wr25VcZSncG0pZIjfePT0OVBvqNEurzValetGNarVrGiq66EBVAFn15iYX4w6FKgQ==}

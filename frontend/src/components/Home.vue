@@ -1,10 +1,37 @@
 <script setup>
+import { reactive } from 'vue'
 
+const sandwitches = reactive([
+  {
+    name: "mamt",
+    preview: "https://via.placeholder.com/150",
+    ingredients: [
+      {
+        name: "Ingredient",
+        amount: 1,
+        src: "https://via.placeholder.com/150"
+      }
+    ],
+    likes: 0
+  },
+  {
+    name: "mamt",
+    preview: "https://via.placeholder.com/150",
+    ingredients: [
+      {
+        name: "Ingredient",
+        amount: 1,
+        src: "https://via.placeholder.com/150"
+      }
+    ],
+    likes: 0
+  }
+])
 </script>
 
 <template>
   <h1>Recent SandWitches</h1>
-  <router-link to="/create">Craft yours</router-link>
+  <router-link to="/craft">Craft yours</router-link>
   <div class="container">
 
     <div class="loading" v-if="sandwitches.length == 0">
@@ -12,7 +39,7 @@
     </div>
     <div v-else class="sandwitch" v-for="sandwitch in sandwitches">
       <div class="info">
-        <img src="https://via.placeholder.com/150" alt="{{ 1+1 }}"/>
+        <img :src="sandwitch.preview" alt="Could not load image" />
         <span>{{ sandwitch.name }}</span>
       </div>
       <div class="ingredients">
@@ -20,7 +47,7 @@
         <ul>
           <li v-for="ingredient in sandwitch.ingredients">
             <template v-for="i in ingredient.amount">
-              <img :src="ingredient.src" alt="ingredient.name" />
+              <img :src="ingredient.src" alt="Could not load image" />
               <span>{{ ingredient.name }}</span>
             </template>
           </li>
@@ -36,32 +63,6 @@
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      sandwitches: [{
-        name: "mamt",
-        ingredients: [{
-          name: "Ingredient",
-          amount: 1,
-          src: "https://via.placeholder.com/150"
-        }],
-        likes: 0,
-      }, {
-        name: "mamt",
-        ingredients: [{
-          name: "Ingredient",
-          amount: 1,
-          src: "https://via.placeholder.com/150"
-        }],
-        likes: 0,
-      },],
-    };
-  },
-};
-</script>
-
 <style>
 main {
   display: flex;
@@ -73,9 +74,9 @@ main {
 <style scoped>
 h1 {
   margin-top: -4.8rem;
-  font-size: 4.2rem;
+  font-size: 4.3rem;
   line-height: .75;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: -4px;
 }
 
@@ -95,8 +96,6 @@ h1 + a {
 
   &:hover {
     top: -.3rem;
-    //margin-top: .7rem;
-    //margin-bottom: .35rem;
     --back-top: 65%;
   }
 
@@ -156,6 +155,7 @@ div.container {
       & > img {
         width: 120px;
         height: 120px;
+        min-height: 120px;
         margin-top: -1.4rem;
       }
 
@@ -181,7 +181,7 @@ div.container {
 
         position: relative;
         top: -.7rem;
-        letter-spacing: 3px;
+        letter-spacing: 2px;
       }
 
       & > ul {

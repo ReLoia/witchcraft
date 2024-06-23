@@ -4,13 +4,13 @@
 
 <template>
   <header>
-    <div class="title">
-    <span>witch</span>
-    <span>CRAFT</span>
-    <div id="underline">
+    <router-link to="/" class="title">
+      <span>witch</span>
+      <span>CRAFT</span>
+      <div id="underline">
 
-    </div>
-    </div>
+      </div>
+    </router-link>
     <div class="stats">
       <div class="digits">
         <span>0</span>
@@ -76,6 +76,8 @@ requestAnimationFrame(rotateTitleAndStats);
       flex-direction: column;
       letter-spacing: -4px;
 
+      color: inherit;
+
       transition: rotate .1s .01s;
 
       & > span {
@@ -100,6 +102,12 @@ requestAnimationFrame(rotateTitleAndStats);
         background-color: #D9D9D9;
         margin: 10px auto;
         border-radius: 24px;
+
+        transition: 1s cubic-bezier(0.19, 1, 0.22, 1) ;
+      }
+
+      &:hover > div#underline {
+        background-color: var(--secondary);
       }
     }
 
