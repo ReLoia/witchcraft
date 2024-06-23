@@ -30,6 +30,28 @@
 
 <script>
 
+// each frame get window.mouse and rotate title and stats based on the mouse direction
+function rotateTitleAndStats() {
+  const title = document.querySelector("header .title");
+  const stats = document.querySelector("header .stats");
+
+  /**
+   * @type {*|{left: boolean, x: number, y: number, right: boolean}}
+   */
+  const mouse = window.mouse;
+
+  if (mouse) {
+    const angleTitleMouse = Math.atan2(mouse.y - title.offsetTop, mouse.x - title.offsetLeft) * 180 / Math.PI;
+    const angleStatsMouse = Math.atan2(mouse.y - stats.offsetTop, mouse.x - stats.offsetLeft) * 180 / Math.PI;
+
+    title.style.rotate = `${Math.max(Math.min(angleTitleMouse - 80, 20), -20)}deg`;
+    stats.style.rotate = `${Math.max(Math.min(angleStatsMouse - 80, 20), -20)}deg`;
+  }
+
+  requestAnimationFrame(rotateTitleAndStats);
+}
+requestAnimationFrame(rotateTitleAndStats);
+
 </script>
 
 <style scoped>
@@ -53,6 +75,8 @@
       display: flex;
       flex-direction: column;
       letter-spacing: -4px;
+
+      transition: rotate .1s .01s;
 
       & > span {
         margin: 0;
@@ -85,6 +109,8 @@
       align-items: center;
 
       transform: rotate(3deg);
+
+      transition: rotate .1s .01s;
 
       & > .digits {
         display: flex;

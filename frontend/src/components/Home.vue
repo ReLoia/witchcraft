@@ -6,25 +6,61 @@
   <h1>Recent SandWitches</h1>
   <router-link to="/create">Craft yours</router-link>
   <div class="container">
-    <div class="sandwitch">
+
+    <div class="loading" v-if="sandwitches.length == 0">
+      <span>Loading...</span>
+    </div>
+    <div v-else class="sandwitch" v-for="sandwitch in sandwitches">
       <div class="info">
         <img src="https://via.placeholder.com/150" alt="{{ 1+1 }}"/>
-        <span>{{ "Name" }}</span>
+        <span>{{ sandwitch.name }}</span>
       </div>
       <div class="ingredients">
         <span>ingredients</span>
         <ul>
+          <li v-for="ingredient in sandwitch.ingredients">
+            <template v-for="i in ingredient.amount">
+              <img :src="ingredient.src" alt="ingredient.name" />
+              <span>{{ ingredient.name }}</span>
+            </template>
+          </li>
         </ul>
       </div>
       <div class="likes">
         <span>likes</span>
-        <span>{{ 1 + 1 }}</span>
+        <span>{{ sandwitch.likes }}</span>
       </div>
 
     </div>
 
   </div>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      sandwitches: [{
+        name: "mamt",
+        ingredients: [{
+          name: "Ingredient",
+          amount: 1,
+          src: "https://via.placeholder.com/150"
+        }],
+        likes: 0,
+      }, {
+        name: "mamt",
+        ingredients: [{
+          name: "Ingredient",
+          amount: 1,
+          src: "https://via.placeholder.com/150"
+        }],
+        likes: 0,
+      },],
+    };
+  },
+};
+</script>
 
 <style>
 main {
@@ -53,11 +89,14 @@ h1 + a {
   z-index: 1;
 
   --back-top: 53%;
-  transition: margin-top .3s, margin-bottom .3s;
+  transition: margin-top .3s, margin-bottom .3s, top .3s;
+
+  top: 0;
 
   &:hover {
-    margin-top: .7rem;
-    margin-bottom: .35rem;
+    top: -.3rem;
+    //margin-top: .7rem;
+    //margin-bottom: .35rem;
     --back-top: 65%;
   }
 
@@ -90,6 +129,7 @@ div.container {
   margin-top: 100px;
   width: 100%;
 
+  gap: 40px;
   padding-inline: 40px;
 
   & > div.sandwitch {
@@ -122,10 +162,10 @@ div.container {
       & > span {
         color: var(--secondary);
 
-        font-size: 1.6rem;
+        font-size: 1.3rem;
         font-weight: bold;
-        margin-top: -1.4rem;
-        margin-bottom: 1.4rem;
+        margin-top: -1.24rem;
+        margin-bottom: 1.24rem;
 
         display: inline-block;
       }
@@ -142,6 +182,34 @@ div.container {
         position: relative;
         top: -.7rem;
         letter-spacing: 3px;
+      }
+
+      & > ul {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        padding-inline: 10px;
+
+        & > li {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 5px;
+
+          & > img {
+            width: 80px;
+            height: 80px;
+          }
+
+          & > span {
+            color: var(--primary);
+            font-size: .8rem;
+            font-weight: bold;
+
+            position: relative;
+            top: -.8rem;
+          }
+        }
       }
 
     }
