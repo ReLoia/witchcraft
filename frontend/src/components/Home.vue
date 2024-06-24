@@ -63,14 +63,6 @@ const sandwitches = reactive([
   </div>
 </template>
 
-<style>
-main {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-</style>
-
 <style scoped>
 h1 {
   margin-top: -4.8rem;

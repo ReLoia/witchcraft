@@ -55,6 +55,12 @@ requestAnimationFrame(rotateTitleAndStats);
 </script>
 
 <style scoped>
+  main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
   header {
     display: flex;
     flex-direction: row;
