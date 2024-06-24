@@ -117,7 +117,7 @@ div.container {
   align-items: center;
   justify-content: center;
 
-  margin-top: 100px;
+  margin-top: 70px;
   width: 100%;
 
   gap: 40px;

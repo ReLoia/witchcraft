@@ -92,7 +92,8 @@ onMounted(() => {
   const overlay = document.querySelector('.overlay');
 
   overlay.addEventListener('click', () => {
-    isIngredientOpen.value = false
+    isIngredientOpen.value = false;
+    isGenreOpen.value = false;
   })
 })
 
@@ -129,17 +130,13 @@ onMounted(() => {
         <input type="file" name="ingredient_img" id="ingredient_img" accept="image/*" v-on:change="currentIngredient.file = $event.target.files[0]">
       </div>
       <div class="text_input">
-<!--        what is it <b>called</b>? -->
         <label for="ingredient_name">what is it <b>called</b>?</label>
         <input type="text" v-model="currentIngredient.name">
       </div>
-<!--      how <b>many</b> of it? -->
       <div class="text_input">
         <label for="ingredient_amount">how <b>many</b> of it?</label>
         <input type="number" v-model="currentIngredient.amount">
       </div>
-
-<!--      how <b>big</b> is it?, two inputs in one row -->
       <div class="text_input">
         <label for="ingredient_size">how <b>big</b> is it?</label>
         <div class="row">
@@ -147,16 +144,10 @@ onMounted(() => {
           <input type="number" v-model="currentIngredient.size.height">
         </div>
       </div>
-<!--      how <b>thick</b> is it? >-->
       <div class="text_input">
         <label for="ingredient_thickness">how <b>thick</b> is it?</label>
         <input type="number" v-model="currentIngredient.thickness">
       </div>
-
-<!-- TODO:
-All those are instances of div.text_input, the first with a single input, the second with two inputs (40% the size of the first) and the last a signle input with 40% the size of the first
-          also, all these will have a label with the text written in the comment above. Also those will change the variable ingredient to the value of the input
- -->
 
       <button @click="addIngredient(currentIngredient); isIngredientOpen=false">
         <b>Add</b> it to the ingredients
@@ -189,10 +180,22 @@ All those are instances of div.text_input, the first with a single input, the se
 
           <button @click="isGenreOpen = true">
             <svg-icon type="mdi" :path="mdiPlusCircle"/>
+            <div :class="isGenreOpen ? 'open' : ''">
+              <span>add a <b>genre</b></span>
+              <div class="genres">
+                <div class="genre" v-for="genre in possibleGenres.filter(genre => !sandWitch.genre.includes(genre))">
+                  <span>{{ genre }}</span>
+                  <button @click="addGenre(genre)">
+                    <svg-icon type="mdi" :path="mdiPlusCircle"/>
+                  </button>
+                </div>
+              </div>
+
+            </div>
           </button>
         </div>
       </div>
-      
+
       <div class="buttons">
         <button>Craft it!</button>
         <router-link class="button" to="/">Cancel</router-link>
@@ -201,14 +204,6 @@ All those are instances of div.text_input, the first with a single input, the se
   </div>
   <div class="overlay"></div>
 </template>
-
-<!--<script>-->
-<!--const overlay = document.querySelector('.overlay');-->
-
-<!--overlay.addEventListener('click', () => {-->
-<!--  this.isIngredientOpen.value = false-->
-<!--})-->
-<!--</script>-->
 
 <style scoped>
 h1 {
@@ -227,9 +222,9 @@ div.content {
   justify-content: space-between;
 
   width: 100%;
-  margin-top: 100px;
+  margin-top: 70px;
 
-  gap: 100px;
+  gap: 10px;
   position: relative;
 
   & > .add-ingredient,
@@ -239,7 +234,7 @@ div.content {
 
     background: #000;
     box-shadow: -10px 14px 0 rgba(217, 217, 217, 0.8);
-    min-height: 600px;
+    min-height: 540px;
 
     position: relative;
 
@@ -499,7 +494,8 @@ div.content {
         align-items: center;
         padding-block: 0;
 
-        gap: 30px;
+        //gap: 30px;
+        flex-wrap: wrap;
 
         padding-right: 100px;
 
@@ -509,6 +505,7 @@ div.content {
           font-size: .76rem;
           letter-spacing: 0;
           font-weight: bold;
+          max-height: 26px;
 
           display: flex;
           flex-direction: row;
@@ -556,6 +553,72 @@ div.content {
             top: -4px;
           }
 
+          & > div {
+            display: none;
+            z-index: 20;
+
+            cursor: default;
+
+            width: 200px;
+            background: var(--background);
+
+            box-shadow: 0 4px 2px #D9D9D9;
+
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+
+            flex-direction: column;
+
+
+            padding: 6px;
+            border-radius: 10px;
+
+            &.open {
+              display: flex;
+            }
+
+            & > .genres {
+              display: flex;
+              flex-direction: column;
+
+              max-height: 200px;
+              overflow-y: auto;
+
+              & > .genre {
+                font-size: .8rem;
+                max-height: 25px;
+
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+
+                & > span {
+                  background: #D9D9D9;
+                  color: var(--background);
+                  padding: 0 4px;
+                  border-radius: 6px;
+                }
+
+                & > button {
+                  background: #D9D9D9;
+                  color: var(--background);
+                  border: none;
+                  padding: 0;
+
+                  width: 34px;
+                  height: 34px;
+                  line-height: 48px;
+                  border-radius: 10px;
+
+                  margin-left: -10px;
+
+                  scale: .48;
+                }
+              }
+            }
+          }
         }
       }
 
@@ -623,9 +686,11 @@ div.content.open-overlay + .overlay {
   width: 100%;
   height: 100%;
 
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
+
+  cursor: pointer;
 
   background: rgba(0, 0, 0, .5);
   backdrop-filter: blur(1px);

@@ -1,4 +1,9 @@
 <script setup>
+import { ref } from 'vue';
+
+const craftedSandwitches = ref(0);
+
+// TODO: make craftedSandwitches be loaded from the server
 
 </script>
 
@@ -7,16 +12,15 @@
     <router-link to="/" class="title">
       <span>witch</span>
       <span>CRAFT</span>
-      <div id="underline">
-
-      </div>
+      <div id="underline"></div>
     </router-link>
     <div class="stats">
       <div class="digits">
-        <span>0</span>
-        <span>0</span>
-        <span>0</span>
-        <span>0</span>
+<!--        <span>0</span>-->
+<!--        <span>0</span>-->
+<!--        <span>0</span>-->
+<!--        <span>0</span>-->
+        <span v-for="digit in craftedSandwitches.toString().padStart(4, '0').split('')" :key="digit">{{ digit }}</span>
       </div>
       <p>
         <span>sandwitches</span> <span>crafted</span>
