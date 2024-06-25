@@ -103,7 +103,7 @@ onMounted(() => {
   <h1>Craft your
     <Sandwitch/>
   </h1>
-  <div class="content" :class="(isIngredientOpen || isGenreOpen) ? 'open-overlay' : ''">
+  <div class="content">
     <div class="ingredients">
       <span>ingredients</span>
       <ul>
@@ -202,20 +202,10 @@ onMounted(() => {
       </div>
     </div>
   </div>
-  <div class="overlay"></div>
+  <div class="overlay" :class="{ 'open-overlay': (isIngredientOpen || isGenreOpen) }"></div>
 </template>
 
 <style scoped>
-h1 {
-  margin-top: -4.8rem;
-  font-size: 4.3rem;
-  line-height: .75;
-  font-weight: 400;
-  letter-spacing: -4px;
-}
-
-
-
 div.content {
   display: flex;
   flex-direction: row;
@@ -494,7 +484,6 @@ div.content {
         align-items: center;
         padding-block: 0;
 
-        //gap: 30px;
         flex-wrap: wrap;
 
         padding-right: 100px;
@@ -682,7 +671,7 @@ div.content {
 
 }
 
-div.content.open-overlay + .overlay {
+.overlay.open-overlay {
   width: 100%;
   height: 100%;
 

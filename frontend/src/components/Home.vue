@@ -77,13 +77,6 @@ const sandwitches = reactive([
 </template>
 
 <style scoped>
-h1 {
-  margin-top: -4.8rem;
-  font-size: 4.3rem;
-  line-height: .75;
-  font-weight: 400;
-  letter-spacing: -4px;
-}
 
 h1 + a {
   margin-top: 1rem;

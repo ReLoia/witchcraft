@@ -17,10 +17,25 @@ const routes = [
         name: 'Craft',
         component: () => import('./components/Craft.vue')
     },
+    {
+        path: '/profile',
+        name: 'Profile',
+        component: () => import('./components/Profile.vue'),
+    }
 ]
 const router = createRouter({
     history: createWebHistory(),
     routes,
+})
+
+router.beforeEach((to, from, next) => {
+    if (to.name == 'Login' && store.state.user.name != '') {
+        next({ name: 'Profile' })
+    } else if (to.name == 'Profile' && store.state.user.name == '') {
+        next({ name: 'Login' })
+    }
+
+    next();
 })
 
 const store = createStore({

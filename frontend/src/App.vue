@@ -1,7 +1,9 @@
 <script setup>
-import { ref } from 'vue';
+import {onMounted, ref} from 'vue';
 import { useStore } from 'vuex';
 const store = useStore();
+
+const loginFormOpen = ref(false);
 
 const craftedSandwitches = ref(0);
 
@@ -9,8 +11,15 @@ const craftedSandwitches = ref(0);
 
 // TODO: store login in global scope
 const user = store.state.user;
-
 console.log("user", user)
+
+onMounted(() => {
+  const overlay = document.querySelector('.overlay');
+
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) loginFormOpen.value = false;
+  })
+})
 
 </script>
 
@@ -21,20 +30,33 @@ console.log("user", user)
       <span>CRAFT</span>
       <div id="underline"></div>
     </router-link>
-    <router-link :to="user.name ? '/profile' : '/login'" class="stats">
-      <template v-if="user.name">
+    <router-link to="/profile" v-if="user.name" class="stats">
       <span>your</span>
       <span>profile</span>
-      </template>
-      <template v-else>
-        <span>login</span>
-        <span>to craft</span>
-      </template>
     </router-link>
+    <button v-else class="stats" @click="loginFormOpen = true">
+      <span>login</span>
+      <span>to craft</span>
+    </button>
   </header>
   <main>
     <RouterView />
   </main>
+  <div class="overlay" :class="{ open: loginFormOpen }">
+    <div class="login-form">
+      <h1>Login</h1>
+      <div>
+        <label for="username">Username</label>
+        <input type="text" id="username" />
+      </div>
+      <div>
+        <label for="password">Password</label>
+        <input type="password" id="password" />
+      </div>
+      <button>Login</button>
+    </div>
+
+  </div>
 </template>
 
 <script>
@@ -63,13 +85,17 @@ requestAnimationFrame(rotateTitleAndStats);
 
 </script>
 
-<style scoped>
-  main {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+<style>
+main > h1 {
+  margin-top: -4.8rem;
+  font-size: 4.3rem;
+  line-height: .75;
+  font-weight: 400;
+  letter-spacing: -4px;
+}
+</style>
 
+<style scoped>
   header {
     display: flex;
     flex-direction: row;
@@ -131,6 +157,9 @@ requestAnimationFrame(rotateTitleAndStats);
       flex-direction: column;
       align-items: center;
 
+      padding: 0;
+      background: none;
+
       transform: rotate(3deg);
       transition: rotate .1s .01s;
 
@@ -153,6 +182,7 @@ requestAnimationFrame(rotateTitleAndStats);
       }
 
       &:hover {
+        border: none;
         color: var(--secondary);
         &:after {
           background-color: var(--secondary);
@@ -162,4 +192,89 @@ requestAnimationFrame(rotateTitleAndStats);
     }
   }
 
+  main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .overlay {
+    display: none;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+
+    cursor: pointer;
+
+    &.open {
+      display: flex;
+    }
+
+    & > .login-form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+
+      width: 100%;
+      height: 100%;
+      max-height: 400px;
+      max-width: min(380px, 97%);
+
+      border-radius: 12px;
+
+      background: var(--background);
+
+      padding: 20px 30px;
+
+      z-index: 1;
+      pointer-events: all;
+
+      & > div {
+        width: 100%;
+
+        & > label {
+          display: block;
+          font-size: .9rem;
+          font-weight: bold;
+          margin-left: 10px;
+          margin-bottom: -10px;
+        }
+
+        & > input {
+          width: 100%;
+          padding: 10px;
+          border: none;
+          border-radius: 8px;
+          box-sizing: border-box;
+
+          margin-top: 10px;
+        }
+      }
+
+      & > button {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 8px;
+
+        margin-top: auto;
+
+        background: var(--secondary);
+        color: #D9D9D9;
+
+        font-size: 1.1rem;
+        font-weight: bold;
+
+        cursor: pointer;
+      }
+    }
+  }
 </style>
