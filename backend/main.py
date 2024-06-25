@@ -3,6 +3,12 @@ from typing import Annotated
 from fastapi import FastAPI, Depends
 from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+
+# authentication import
+import jwt
+from database.auth.auth import authenticate_user
+from database.auth.security import create_access_token
 
 # database
 from sqlalchemy.orm import Session
@@ -14,6 +20,10 @@ import models
 
 
 app = FastAPI()
+
+# authentication
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
 
 # TODO: Add the correct origins
 origins = [
@@ -49,13 +59,28 @@ async def get_sandwitches(db: Session = Depends(get_db)):
 
 
 # User API
-@app.post("/user", response_model=models.User)
-async def create_user(user: models.User, db: Session = Depends(get_db)):
-    # TODO(): Implement the database logic
-    return user
+@app.post("/token", response_model=dict)
+async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    auth_check = authenticate_user(db, form_data.username, form_data.password)
+    if not auth_check:
+        return {"error": "Incorrect username or password"}
+
+    access_token = create_access_token(data={"sub": form_data.username})
+    return {"access_token": access_token, "token_type": "bearer"}
+
+
+@app.post("/users", response_model=models.User)
+async def create_user(user: models.LoginUserData, db: Session = Depends(get_db)):
+    hashed_password = "fakehashedpassword"
+
+    # new_user = models.User(username=user.username, hashed_password=
+
+    return {
+        "username": user.username,
+        "sandwitches": []
+    }
 
 
 # @app.get("/users/me", response_model=models.User)
-# async def read_users_me(db: Session = Depends(get_db)):
-#     # TODO(): Implement the database logic
-#     return models.User(username="fakeuser", email="", password="", sandwitches=[])
+# async def get_user(
+
