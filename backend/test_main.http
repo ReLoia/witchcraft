@@ -15,16 +15,15 @@ username=admin&password=admin
 
 GET http://localhost:8000/users/me
 Accept: application/json
-Authorization: Bearer <token>
+Authorization: Bearer
 
 ###
 
 POST http://localhost:8000/users/
 Accept: application/json
-Content-Type: application/json
+Content-Type: application/x-www-form-urlencoded
 
-{
-  "username": "test",
-  "password": "test"
-}
+username=admin&password=admin
+
+
 

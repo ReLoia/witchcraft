@@ -1,9 +1,13 @@
 # Methods for authentication
 from passlib.context import CryptContext
 
-from ..models import User
+from ..models import UserEntity
 from sqlalchemy.orm import Session
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+
+def get_password_hash(password):
+    return pwd_context.hash(password)
 
 
 def verify_password(plain_password, hashed_password):
@@ -11,7 +15,7 @@ def verify_password(plain_password, hashed_password):
 
 
 def get_user(db: Session, username: str):
-    return db.query(User).filter(User.username == username).first()
+    return db.query(UserEntity).filter(UserEntity.username == username).first()
 
 
 def authenticate_user(db: Session, username: str, password: str):

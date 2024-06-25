@@ -18,16 +18,16 @@ sandwitch_ingredients = Table(
 
 
 # TODO: Add the models for the database
-class User(Base):
+class UserEntity(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
     hashed_password = Column(String)
-    sandwitches = relationship("Sandwitch", back_populates="owner")
+    sandwitches = relationship("SandwitchEntity", back_populates="owner")
 
 
-class Sandwitch(Base):
+class SandwitchEntity(Base):
     __tablename__ = "sandwitches"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -35,11 +35,11 @@ class Sandwitch(Base):
     image = Column(String)
     likes = Column(Integer)
     owner_id = Column(Integer, sqlalchemy.ForeignKey("users.id"))
-    owner = relationship("User", back_populates="sandwitches")
-    ingredients = relationship("Ingredient", secondary=sandwitch_ingredients, back_populates="sandwitches")
+    owner = relationship("UserEntity", back_populates="sandwitches")
+    ingredients = relationship("IngredientEntity", secondary=sandwitch_ingredients, back_populates="sandwitches")
 
 
-class Ingredient(Base):
+class IngredientEntity(Base):
     __tablename__ = "ingredients"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -49,7 +49,7 @@ class Ingredient(Base):
     size_width = Column(Integer)
     size_height = Column(Integer)
     image = Column(String)
-    sandwitches = relationship("Sandwitch", secondary=sandwitch_ingredients, back_populates="ingredients")
+    sandwitches = relationship("SandwitchEntity", secondary=sandwitch_ingredients, back_populates="ingredients")
 
 
 Base.metadata.create_all(bind=engine)

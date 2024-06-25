@@ -23,12 +23,12 @@ class SandwitchItem(BaseModel):
 
 
 # User models
-class LoginUserData(BaseModel):
-    username: str
-    password: str
-
-
 # the data that will be sent to the client when they log in
-class User(BaseModel):
+class UserModel(BaseModel):
     username: str
     sandwitches: list[SandwitchItem]
+
+
+class LoginTokenModel(BaseModel):
+    access_token: str
+    token_type: str
