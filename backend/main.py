@@ -1,7 +1,7 @@
 from typing import Annotated
 
 from fastapi import FastAPI, Depends, HTTPException
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
@@ -53,8 +53,8 @@ async def create_sandwitch(sandwitch: SandwitchItem, db: Session = Depends(get_d
 
 @app.get("/sandwitches", response_model=list[SandwitchItem])
 async def get_sandwitches(db: Session = Depends(get_db)):
-    # TODO(): Implement the database logic
-    return []
+    sandwitches = db.query(SandwitchItem).all()
+    return sandwitches
 
 
 # User API
@@ -65,7 +65,11 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = 
         return {"error": "Incorrect username or password"}
 
     access_token = create_access_token(data={"sub": form_data.username})
-    return {"access_token": access_token, "token_type": "bearer"}
+
+    response = JSONResponse(content={"access_token": access_token, "token_type": "bearer"})
+    response.set_cookie(key="access_token", value=access_token, httponly=True, max_age=60*60*24)
+
+    return response
 
 
 @app.post("/users", response_model=LoginTokenModel)
