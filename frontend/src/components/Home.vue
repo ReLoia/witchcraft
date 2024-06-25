@@ -9,7 +9,12 @@ const sandwitches = reactive([
       {
         name: "Ingredient",
         amount: 1,
-        src: "https://via.placeholder.com/150"
+        image: "https://via.placeholder.com/150",
+        size: {
+          width: 1,
+          height: 1
+        },
+        thickness: 1
       }
     ],
     likes: 0
@@ -21,7 +26,12 @@ const sandwitches = reactive([
       {
         name: "Ingredient",
         amount: 1,
-        src: "https://via.placeholder.com/150"
+        image: "https://via.placeholder.com/150",
+        size: {
+          width: 1,
+          height: 1
+        },
+        thickness: 1
       }
     ],
     likes: 0
