@@ -1,9 +1,16 @@
 <script setup>
 import { ref } from 'vue';
+import { useStore } from 'vuex';
+const store = useStore();
 
 const craftedSandwitches = ref(0);
 
 // TODO: make craftedSandwitches be loaded from the server
+
+// TODO: store login in global scope
+const user = store.state.user;
+
+console.log("user", user)
 
 </script>
 
@@ -14,18 +21,16 @@ const craftedSandwitches = ref(0);
       <span>CRAFT</span>
       <div id="underline"></div>
     </router-link>
-    <div class="stats">
-      <div class="digits">
-<!--        <span>0</span>-->
-<!--        <span>0</span>-->
-<!--        <span>0</span>-->
-<!--        <span>0</span>-->
-        <span v-for="digit in craftedSandwitches.toString().padStart(4, '0').split('')" :key="digit">{{ digit }}</span>
-      </div>
-      <p>
-        <span>sandwitches</span> <span>crafted</span>
-      </p>
-    </div>
+    <router-link :to="user.name ? '/profile' : '/login'" class="stats">
+      <template v-if="user.name">
+      <span>your</span>
+      <span>profile</span>
+      </template>
+      <template v-else>
+        <span>login</span>
+        <span>to craft</span>
+      </template>
+    </router-link>
   </header>
   <main>
     <RouterView />
@@ -127,26 +132,33 @@ requestAnimationFrame(rotateTitleAndStats);
       align-items: center;
 
       transform: rotate(3deg);
-
       transition: rotate .1s .01s;
 
-      & > .digits {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
+      & > span {
+        font-size: 2rem;
+        line-height: .9;
+        font-weight: bold;
+      }
 
-        & > span {
-          font-size: 3rem;
-          line-height: .75;
-          font-weight: bold;
+      &:after {
+        content: "";
+        display: block;
+        width: 90%;
+        height: 5px;
+        background-color: #D9D9D9;
+        margin-top: 5px;
+        border-radius: 5px;
+
+        transition: 1s cubic-bezier(0.19, 1, 0.22, 1) ;
+      }
+
+      &:hover {
+        color: var(--secondary);
+        &:after {
+          background-color: var(--secondary);
         }
       }
 
-      & > p {
-        font-size: .85em;
-        color: #D9D9D9;
-      }
     }
   }
 

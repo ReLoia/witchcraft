@@ -1,6 +1,9 @@
 <script setup>
 import { reactive } from 'vue'
+import { useStore} from "vuex";
+const store = useStore();
 
+// TODO: load sandwitches from the server
 const sandwitches = reactive([
   {
     name: "mamt",
