@@ -3,7 +3,8 @@ import {computed, onMounted, reactive, ref} from 'vue';
 import { useStore } from 'vuex';
 const store = useStore();
 
-const loginFormOpen = ref(false);
+const log_regFormOpen = ref(false);
+const registerFormOpen = ref(false);
 if (localStorage.getItem('token')) {
   store.dispatch('fetchUser');
 }
@@ -15,18 +16,23 @@ onMounted(() => {
   const overlay = document.querySelector('.overlay');
 
   overlay.addEventListener('click', e => {
-    if (e.target === overlay) loginFormOpen.value = false;
+    if (e.target === overlay) log_regFormOpen.value = false;
   });
 
   store.subscribe((mutation, state) => {
     if (mutation.type === 'setUser') {
-      loginFormOpen.value = false;
+      log_regFormOpen.value = false;
     }
   });
 })
 
 async function login(e) {
   const username = e.target['username'].value, password = e.target['password'].value;
+
+  if (username.includes(' ') || password.includes(' ')) {
+    e.target.querySelector('.error').innerText = "Username and password must not contain spaces";
+    return;
+  }
 
   const response = await fetch('/api/token', {
     method: 'POST',
@@ -41,9 +47,36 @@ async function login(e) {
     localStorage.setItem('token', json.access_token);
     await store.dispatch('fetchUser');
 
-    loginFormOpen.value = false;
+    log_regFormOpen.value = false;
   } else {
     e.target.querySelector('.error').innerText = "Invalid username or password";
+  }
+}
+
+async function register(e) {
+  const username = e.target['username'].value, password = e.target['password'].value;
+
+  if (username.includes(' ') || password.includes(' ')) {
+    e.target.querySelector('.error').innerText = "Username and password must not contain spaces";
+    return;
+  }
+
+  const response = await fetch('/api/users', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: new URLSearchParams({ username, password }),
+  });
+
+  if (response.ok) {
+    const json = await response.json();
+    localStorage.setItem('token', json.access_token);
+    await store.dispatch('fetchUser');
+
+    log_regFormOpen.value = false;
+  } else {
+    e.target.querySelector('.error').innerText = "There was an error with the registration";
   }
 }
 
@@ -60,28 +93,42 @@ async function login(e) {
       <span>your</span>
       <span>profile</span>
     </router-link>
-    <button v-else class="stats" @click="loginFormOpen = true">
+    <button v-else class="stats" @click="log_regFormOpen = true">
       <span>login</span>
       <span>to craft</span>
     </button>
   </header>
   <main>
-    {{ user }}
     <RouterView />
   </main>
-  <div class="overlay" :class="{ open: loginFormOpen }">
-    <form class="login-form" @submit.prevent="login">
+  <div class="overlay" :class="{ open: log_regFormOpen }">
+    <form v-if="!registerFormOpen" class="log_reg-form" @submit.prevent="login">
       <h1>Login</h1>
       <span class="error"></span>
       <div>
         <label for="username">Username</label>
-        <input type="text" id="username" />
+        <input type="text" id="username" pattern="^\S+$" required />
       </div>
       <div>
         <label for="password">Password</label>
-        <input type="password" id="password" />
+        <input type="password" id="password" required />
       </div>
-      <button>Login</button>
+      <span>Don't have an account? <button type="button" @click="registerFormOpen = true">Register</button>!</span>
+      <button type="submit">Login</button>
+    </form>
+    <form v-else class="log_reg-form" @submit.prevent="register">
+      <h1>Register</h1>
+      <span class="error"></span>
+      <div>
+        <label for="username">Username</label>
+        <input type="text" id="username" pattern="^\S+$" required />
+      </div>
+      <div>
+        <label for="password">Password</label>
+        <input type="password" id="password" required />
+      </div>
+      <span>Already have an account? <button type="button" @click="registerFormOpen = false">Login</button>!</span>
+      <button type="submit">Register</button>
     </form>
 
   </div>
@@ -244,7 +291,7 @@ main > h1 {
       display: flex;
     }
 
-    & > .login-form {
+    & > .log_reg-form {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -253,7 +300,7 @@ main > h1 {
 
       width: 100%;
       height: 100%;
-      max-height: 400px;
+      max-height: 420px;
       max-width: min(380px, 97%);
 
       border-radius: 12px;
@@ -298,13 +345,27 @@ main > h1 {
         }
       }
 
+      & > span:last-of-type {
+        width: 100%;
+        text-align: left;
+        font-size: .9rem;
+        margin-top: auto;
+
+        & > button {
+          background: none;
+          border: none;
+          color: var(--secondary);
+          font-weight: bold;
+          cursor: pointer;
+          padding: 0;
+        }
+      }
+
       & > button {
         width: 100%;
         padding: 10px;
         border: none;
         border-radius: 8px;
-
-        margin-top: auto;
 
         background: var(--secondary);
         color: #D9D9D9;

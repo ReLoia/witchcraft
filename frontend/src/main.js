@@ -29,6 +29,10 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
+    if (to.name == 'Profile' && !localStorage.getItem('token')) {
+        next({ location: '/' });
+        return;
+    }
 
     next();
 })
@@ -72,6 +76,13 @@ const store = createStore({
             } else {
                 localStorage.removeItem('token')
             }
+        },
+        async logout(context) {
+            localStorage.removeItem('token')
+            context.commit('setUser', {
+                username: '',
+                sandwitches: []
+            });
         }
     }
 })

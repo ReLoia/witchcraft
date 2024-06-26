@@ -23,7 +23,6 @@ app = FastAPI()
 # authentication
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-
 # TODO: Add the correct origins
 origins = [
     "http://localhost:5173",
@@ -67,7 +66,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = 
     access_token = create_access_token(data={"sub": form_data.username})
 
     response = JSONResponse(content={"access_token": access_token, "token_type": "bearer"})
-    response.set_cookie(key="access_token", value=access_token, httponly=True, max_age=60*60*24)
+    response.set_cookie(key="access_token", value=access_token, httponly=True, max_age=60 * 60 * 24)
 
     return response
 
@@ -79,7 +78,8 @@ async def create_user(form_data: OAuth2PasswordRequestForm = Depends(), db: Sess
     new_user = UserEntity(username=form_data.username, hashed_password=hashed_password, sandwitches=[])
     db.query(UserEntity)
     if db.query(UserEntity).filter(UserEntity.username == form_data.username).first():
-        return RedirectResponse(url="/token")
+        #         Here /api is required because without it the frontend can't go to the correct endpoint
+        return RedirectResponse(url="/api/token")
 
     db.add(new_user)
     db.commit()
@@ -111,3 +111,14 @@ async def get_user(token: str = Depends(oauth2_scheme), db: Session = Depends(ge
 
     return UserModel(username=user.username, sandwitches=[])
 
+
+# Embed
+@app.get("/users/{user}/embed", description="Generate an image containing all sandwitches of a user")
+async def embed(user: str, db: Session = Depends(get_db)):
+    user = db.query(UserEntity).filter(UserEntity.username == user).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # TODO: Implement the image generation
+
+    return {"message": f"Embedding sandwitch with id {user.username}"}

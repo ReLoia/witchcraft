@@ -27,10 +27,13 @@ username=admin&password=admin
 
 ###
 
-GET http://localhost:8000/sandwitches
+GET http://localhost:8000/users/admin/embed
 Accept: application/json
 
+### SANDWITCHES stuff
 
+GET http://localhost:8000/sandwitches
+Accept: application/json
 
 
 
