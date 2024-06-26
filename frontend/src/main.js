@@ -29,11 +29,6 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-    if (to.name == 'Login' && store.state.user.name != '') {
-        next({ name: 'Profile' })
-    } else if (to.name == 'Profile' && store.state.user.name == '') {
-        next({ name: 'Login' })
-    }
 
     next();
 })
@@ -42,7 +37,7 @@ const store = createStore({
     state() {
         return {
             user: {
-                name: '',
+                username: '',
                 sandwitches: []
             }
         }
@@ -52,7 +47,7 @@ const store = createStore({
             state.user = userdata
         },
         addSandwitch(state, sandwitch) {
-            state.user.sandwitches.push(sandwitch)
+            state.user.sandwitches = [...state.sandwitches, sandwitch]
         }
     },
     actions: {
@@ -61,6 +56,22 @@ const store = createStore({
         },
         addSandwitch(context, sandwitch) {
             context.commit('addSandwitch', sandwitch)
+        },
+        async fetchUser(context) {
+            const response = await fetch('/api/users/me', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                }
+            });
+
+            if (response.status == 200) {
+                const data = await response.json()
+                await context.dispatch('setUser', data)
+            } else {
+                localStorage.removeItem('token')
+            }
         }
     }
 })

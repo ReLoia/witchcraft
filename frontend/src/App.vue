@@ -1,25 +1,51 @@
 <script setup>
-import {onMounted, ref} from 'vue';
+import {computed, onMounted, reactive, ref} from 'vue';
 import { useStore } from 'vuex';
 const store = useStore();
 
 const loginFormOpen = ref(false);
+if (localStorage.getItem('token')) {
+  store.dispatch('fetchUser');
+}
 
-const craftedSandwitches = ref(0);
+const user = reactive(computed(() => store.state.user));
 
-// TODO: make craftedSandwitches be loaded from the server
-
-// TODO: store login in global scope
-const user = store.state.user;
-console.log("user", user)
 
 onMounted(() => {
   const overlay = document.querySelector('.overlay');
 
   overlay.addEventListener('click', e => {
     if (e.target === overlay) loginFormOpen.value = false;
-  })
+  });
+
+  store.subscribe((mutation, state) => {
+    if (mutation.type === 'setUser') {
+      loginFormOpen.value = false;
+    }
+  });
 })
+
+async function login(e) {
+  const username = e.target['username'].value, password = e.target['password'].value;
+
+  const response = await fetch('/api/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: new URLSearchParams({ username, password }),
+  });
+
+  if (response.ok) {
+    const json = await response.json();
+    localStorage.setItem('token', json.access_token);
+    await store.dispatch('fetchUser');
+
+    loginFormOpen.value = false;
+  } else {
+    e.target.querySelector('.error').innerText = "Invalid username or password";
+  }
+}
 
 </script>
 
@@ -30,7 +56,7 @@ onMounted(() => {
       <span>CRAFT</span>
       <div id="underline"></div>
     </router-link>
-    <router-link to="/profile" v-if="user.name" class="stats">
+    <router-link to="/profile" v-if="user.username" class="stats">
       <span>your</span>
       <span>profile</span>
     </router-link>
@@ -40,11 +66,13 @@ onMounted(() => {
     </button>
   </header>
   <main>
+    {{ user }}
     <RouterView />
   </main>
   <div class="overlay" :class="{ open: loginFormOpen }">
-    <div class="login-form">
+    <form class="login-form" @submit.prevent="login">
       <h1>Login</h1>
+      <span class="error"></span>
       <div>
         <label for="username">Username</label>
         <input type="text" id="username" />
@@ -54,13 +82,12 @@ onMounted(() => {
         <input type="password" id="password" />
       </div>
       <button>Login</button>
-    </div>
+    </form>
 
   </div>
 </template>
 
 <script>
-
 // each frame get window.mouse and rotate title and stats based on the mouse direction
 function rotateTitleAndStats() {
   const title = document.querySelector("header .title");
@@ -222,6 +249,7 @@ main > h1 {
       flex-direction: column;
       align-items: center;
       gap: 20px;
+      cursor: default;
 
       width: 100%;
       height: 100%;
@@ -236,6 +264,17 @@ main > h1 {
 
       z-index: 1;
       pointer-events: all;
+
+      & > .error {
+        color: #fff;
+        font-size: .9rem;
+        width: 100%;
+        background: var(--primary);
+        border-radius: 4px;
+
+        font-weight: bold;
+        text-align: center;
+      }
 
       & > div {
         width: 100%;

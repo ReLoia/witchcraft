@@ -46,7 +46,6 @@ const sandwitches = reactive([
   <h1>Recent SandWitches</h1>
   <router-link to="/craft">Craft yours</router-link>
   <div class="container">
-
     <div class="loading" v-if="sandwitches.length == 0">
       <span>Loading...</span>
     </div>

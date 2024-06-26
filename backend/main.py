@@ -62,7 +62,7 @@ async def get_sandwitches(db: Session = Depends(get_db)):
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     auth_check = authenticate_user(db, form_data.username, form_data.password)
     if not auth_check:
-        return {"error": "Incorrect username or password"}
+        raise HTTPException(status_code=400, detail="Incorrect username or password")
 
     access_token = create_access_token(data={"sub": form_data.username})
 
