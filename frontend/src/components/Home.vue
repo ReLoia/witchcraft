@@ -1,45 +1,18 @@
 <script setup>
-import { reactive } from 'vue'
+import {onMounted, reactive, ref} from 'vue'
 import { useStore} from "vuex";
 const store = useStore();
 
 // TODO: load sandwitches from the server
-const sandwitches = reactive([
-  {
-    name: "mamt",
-    preview: "https://via.placeholder.com/150",
-    ingredients: [
-      {
-        name: "Ingredient",
-        amount: 1,
-        image: "https://via.placeholder.com/150",
-        size: {
-          width: 1,
-          height: 1
-        },
-        thickness: 1
-      }
-    ],
-    likes: 0
-  },
-  {
-    name: "mamt",
-    preview: "https://via.placeholder.com/150",
-    ingredients: [
-      {
-        name: "Ingredient",
-        amount: 1,
-        image: "https://via.placeholder.com/150",
-        size: {
-          width: 1,
-          height: 1
-        },
-        thickness: 1
-      }
-    ],
-    likes: 0
+const sandwitches = ref([]);
+
+onMounted(async () => {
+  const response = await fetch('/api/sandwitches');
+  if (response.ok) {
+    sandwitches.value = await response.json();
   }
-])
+})
+
 </script>
 
 <template>
@@ -47,7 +20,7 @@ const sandwitches = reactive([
   <router-link to="/craft">Craft yours</router-link>
   <div class="container">
     <div class="loading" v-if="sandwitches.length == 0">
-      <span>Loading...</span>
+      <span>There are no sandwitches yet</span>
     </div>
     <div v-else class="sandwitch" v-for="sandwitch in sandwitches">
       <div class="info">

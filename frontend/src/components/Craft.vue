@@ -18,6 +18,7 @@ const currentIngredient = reactive({
     height: 1
   }
 })
+const fileURI = ref("")
 
 const ingredients = reactive([
   {
@@ -49,6 +50,8 @@ function addIngredient(ingredient) {
   if (ingredient.thickness === 0)
     return;
 
+  isIngredientOpen.value = false
+
   ingredients.push({...ingredient, src: URL.createObjectURL(ingredient.file)})
 }
 
@@ -57,6 +60,18 @@ function removeIngredient(element) {
   if (index > -1) {
     ingredients.splice(index, 1)
   }
+}
+
+const sandWitch = reactive({
+  name: "",
+  description: "",
+  genre: ["magical"],
+  ingredients: ingredients
+})
+
+function loadImage(ev) {
+  currentIngredient.file = ev.target.files[0]
+  fileURI.value = URL.createObjectURL(ev.target.files[0])
 }
 
 // GENRES
@@ -68,13 +83,6 @@ const isGenreOpen = ref(false)
 const possibleGenres = reactive([
   "magical", "psychical", "metallic", "organic", "plastic", "wooden", "glass", "stone", "liquid", "gaseous", "solid", "hot", "cold", "frozen", "burning", "rotten", "fresh", "artificial", "natural", "synthetic", "alien", "human", "animal", "plant", "mineral", "chemical", "biological", "technological", "spiritual", "emotional", "physical", "mental", "abstract", "concrete", "tasteful", "tasteless", "smelly", "smell-less",
 ])
-
-const sandWitch = reactive({
-  name: "",
-  description: "",
-  genre: ["magical"],
-  ingredients: ingredients
-})
 
 function addGenre(genre) {
   sandWitch.genre.push(genre)
@@ -123,11 +131,11 @@ onMounted(() => {
         <svg-icon type="mdi" :path="mdiCartPlus"/>
       </button>
     </div>
-    <div class="add-ingredient" :class="isIngredientOpen ? 'open' : ''">
+    <div class="add-ingredient" :class="isIngredientOpen ? 'open' : ''" :style="{ '--backImg': fileURI ? 'url(' + fileURI + ')' : '#D9D9D9' }">
       <span><b>Add</b> an ingredient</span>
       <div class="ingredient_img">
         <label for="ingredient_img"></label>
-        <input type="file" name="ingredient_img" id="ingredient_img" accept="image/*" v-on:change="currentIngredient.file = $event.target.files[0]">
+        <input type="file" name="ingredient_img" id="ingredient_img" accept="image/*" v-on:change="loadImage"/>
       </div>
       <div class="text_input">
         <label for="ingredient_name">what is it <b>called</b>?</label>
@@ -149,7 +157,7 @@ onMounted(() => {
         <input type="number" v-model="currentIngredient.thickness">
       </div>
 
-      <button @click="addIngredient(currentIngredient); isIngredientOpen=false">
+      <button @click="addIngredient(currentIngredient); ">
         <b>Add</b> it to the ingredients
       </button>
     </div>
@@ -335,8 +343,9 @@ div.content {
     box-sizing: border-box;
 
     padding: 14px 10px;
-
     gap: 5px;
+
+    --backImg: #D9D9D9;
 
     & > span {
       font-weight: 500;
@@ -357,7 +366,7 @@ div.content {
       height: 140px;
       border-radius: 12px;
 
-      background: #D9D9D9;
+      background: var(--backImg);
 
       & > input {
         display: none;

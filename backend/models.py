@@ -15,7 +15,7 @@ class SandwitchIngredient(BaseModel):
     image: str
 
 
-class SandwitchItem(BaseModel):
+class SandwitchModel(BaseModel):
     name: str
     image: str
     ingredients: list[SandwitchIngredient]
@@ -26,7 +26,7 @@ class SandwitchItem(BaseModel):
 # the data that will be sent to the client when they log in
 class UserModel(BaseModel):
     username: str
-    sandwitches: list[SandwitchItem]
+    sandwitches: list[SandwitchModel]
 
 
 class LoginTokenModel(BaseModel):

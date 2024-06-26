@@ -12,11 +12,11 @@ from database.auth.security import create_access_token, decode_access_token
 
 # database
 from sqlalchemy.orm import Session
-from database.models import UserEntity
+from database.models import UserEntity, SandwitchEntity
 from database.session import get_db
 
 # Models of FastAPI responses and handling
-from models import SandwitchItem, UserModel, LoginTokenModel
+from models import SandwitchModel, UserModel, LoginTokenModel
 
 app = FastAPI()
 
@@ -45,15 +45,15 @@ async def root():
 
 
 # Sandwitch API
-@app.post("/sandwitch", response_model=SandwitchItem)
-async def create_sandwitch(sandwitch: SandwitchItem, db: Session = Depends(get_db)):
+@app.post("/sandwitch", response_model=SandwitchModel)
+async def create_sandwitch(sandwitch: SandwitchModel, db: Session = Depends(get_db)):
     # TODO(): Implement the database logic
     return sandwitch
 
 
-@app.get("/sandwitches", response_model=list[SandwitchItem])
+@app.get("/sandwitches", response_model=list[SandwitchModel])
 async def get_sandwitches(db: Session = Depends(get_db)):
-    sandwitches = db.query(SandwitchItem).all()
+    sandwitches = db.query(SandwitchEntity).all()
     return sandwitches
 
 
