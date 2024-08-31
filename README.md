@@ -1,4 +1,5 @@
 # WitchSand
+![image](https://github.com/user-attachments/assets/eb690232-21ed-4532-af4e-7e29c0e138f6)
 
 WitchSand is a website made as a HackClub project.  
 It is a website that allows users to make and share sandwiches made with any ingredient.
